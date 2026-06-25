@@ -58,10 +58,10 @@ def run_vqe_optimization():
 
     #SPSA Hyperparameters
     alpha, gamma = 0.602, 0.101
-    a, c = 1.0, 0.1
-    A=0
+    a, c = 1.5, 0.15
+    A=5
 
-    max_iterations= 40 
+    max_iterations= 200
 
     for k in range(1, max_iterations + 1):
         ak = a/(k+A)**alpha #Step sizes
