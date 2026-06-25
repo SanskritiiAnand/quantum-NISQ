@@ -32,7 +32,7 @@ def run_vqe_optimization():
     
     #containers to store convergence paths for plotting
     cobyla_history = []
-    spsa_history = []
+    powell_history = []
 
     #objective function that the classical SciPy optimizer calls iteratively
     def cost_function(params, history_list):
@@ -50,18 +50,18 @@ def run_vqe_optimization():
     initial_point = np.zeros(num_params) #start from zero angles
     minimize(cost_function, initial_point, args=(cobyla_history,), method='COBYLA', options={'maxiter': 40})
 
-    #run SPSA 
-    print("\n Running SPSA optimizer")
-    minimize(cost_function, initial_point, args=(spsa_history,), method='Powell', options={'maxiter': 25})
+    #run Powell
+    print("\n Running Powell optimizer...")
+    minimize(cost_function, initial_point, args=(powell_history,), method='Powell', options={'maxiter': 25})
 
     print("\n ----Optimization Complete----")
     print(f"Exact Target Energy: {exact_energy: .6f}Ha")
     print(f"Final COBYLA Energy: {cobyla_history[-1]: .6f}Ha")
-    print(f"Final SPSA-Powell Energy: {spsa_history[-1]: .6f}Ha")
+    print(f"Final Powell Energy: {powell_history[-1]: .6f}Ha")
 
     plt.figure(figsize=(10,6))
     plt.plot(cobyla_history, label='COBYLA', color='tab:blue', lw=2)
-    plt.plot(spsa_history, label='SPSA-Powell', color='tab:orange', lw=2)
+    plt.plot(spsa_history, label='POWELL', color='tab:orange', lw=2)
     plt.axhline(y= exact_energy, color='tab:red', linestyle='--', label='Exact Energy Baseline')
     plt.title("VQE Convergence Comparison on Noisy LiH System", fontsize=14)
     plt.xlabel("Optimizer Iterations", fontsize=12)
