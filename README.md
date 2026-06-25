@@ -40,5 +40,16 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Run the VQE engine
+### 4. Execute algorithms
+Navigate into the respective algorithm directory to run its execution orchestrator:
 
+* **To run the VQE chemistry optimization:**
+  ```bash
+  cd vqe
+  python run_vqe.py
+  ```
+* **To run the QAOA graph solver (Status: Incomplete):**
+  ```bash
+  cd qaoa
+  python run_qaoa.py
+  ```
