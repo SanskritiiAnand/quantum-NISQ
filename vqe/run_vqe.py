@@ -29,39 +29,67 @@ def run_vqe_optimization():
 
     #initialize modern V2 Estimator with noise parameters
     estimator = EstimatorV2.from_backend(backend)
-    
-    #containers to store convergence paths for plotting
-    cobyla_history = []
-    powell_history = []
 
-    #objective function that the classical SciPy optimizer calls iteratively
-    def cost_function(params, history_list):
+    #containers to store convergence paths for plotting 
+    cobyla_history = []
+    SPSA_history = []
+
+    #objective function that evaluates the energy profile
+    def cost_function(params):
         pub= (transpiled_ansatz, transpiled_hamiltonian, params) #bind current parameters to the transpiled ansatz
         job= estimator.run([pub]) #EstimattorV2 takes a tuple of (circuit, observables, parameter_values)
         result= job.result()[0]
+        return float(result.data.evs)
 
-        #extract the expectation value (<H>)
-        energy = float(result.data.evs)
-        history_list.append(energy)
+    #wrapper function for COBYLA 
+    def cobyla_cost(params):
+        energy = cost_function(params)
+        cobyla_history.append(energy)
         return energy
     
     #run COBYLA
     print("\n Running COBYLA optimizer...")
     initial_point = np.zeros(num_params) #start from zero angles
-    minimize(cost_function, initial_point, args=(cobyla_history,), method='COBYLA', options={'maxiter': 40})
+    minimize(cobyla_cost, initial_point, method='COBYLA', options={'maxiter': 40})
 
-    #run Powell
-    print("\n Running Powell optimizer...")
-    minimize(cost_function, initial_point, args=(powell_history,), method='Powell', options={'maxiter': 25})
+    #run SPSA
+    print("\n Running SPSA optimizer...")
+    params= np.copy(initial_point)
+
+    #SPSA Hyperparameters
+    alpha, gamma = 0.602, 0.101
+    a, c = 1.0, 0.1
+    A=0
+
+    max_iterations= 40 
+
+    for k in range(1, max_iterations + 1):
+        ak = a/(k+A)**alpha #Step sizes
+        ck = c/k**gamma
+
+        delta= np.random.choice([-1, 1], size= num_params) #Generate random perturbation vector (+1 or -1)
+
+        params_plus= params + ck * delta #Dual perturbation evaluations
+        params_minus= params - ck * delta
+
+        y_plus= cost_function(params_plus)
+        y_minus= cost_function(params_minus)
+
+        gradient= (y_plus - y_minus)/ (2*ck*delta) #Simultaneous gradient approximation
+
+        params= params - ak * gradient #Parameter update
+
+        updated_energy= cost_function(params)
+        SPSA_history.append(updated_energy)
 
     print("\n ----Optimization Complete----")
     print(f"Exact Target Energy: {exact_energy: .6f}Ha")
     print(f"Final COBYLA Energy: {cobyla_history[-1]: .6f}Ha")
-    print(f"Final Powell Energy: {powell_history[-1]: .6f}Ha")
+    print(f"Final SPSA Energy:   {SPSA_history[-1]: .6f}Ha")
 
     plt.figure(figsize=(10,6))
     plt.plot(cobyla_history, label='COBYLA', color='tab:blue', lw=2)
-    plt.plot(powell_history, label='POWELL', color='tab:orange', lw=2)
+    plt.plot(SPSA_history, label='SPSA', color='tab:orange', lw=2)
     plt.axhline(y= exact_energy, color='tab:red', linestyle='--', label='Exact Energy Baseline')
     plt.title("VQE Convergence Comparison on Noisy LiH System", fontsize=14)
     plt.xlabel("Optimizer Iterations", fontsize=12)
