@@ -16,7 +16,7 @@ def run_vqe_optimization():
 
     #using hardware efficient Ry-Rz parameterized ansatz with  linear entanglement
     ansatz = TwoLocal(num_qubits=num_qubits, rotation_blocks=['ry','rz' ],
-                      entanglement_blocks= 'cz', entanglement='linear', reps=1,
+                      entanglement_blocks= 'cz', entanglement='linear', reps=2,
                       insert_barriers= True)
     num_params = ansatz.num_parameters
 
@@ -28,7 +28,7 @@ def run_vqe_optimization():
     transpiled_hamiltonian = hamiltonian.apply_layout(transpiled_ansatz.layout)
 
     #initialize modern V2 Estimator with noise parameters
-    estimator = EstimatorV2.from_backend(backend)
+    estimator = EstimatorV2.from_backend(backend, options={"run_options":{"shots":4096}})
 
     #containers to store convergence paths for plotting 
     cobyla_history = []
@@ -57,9 +57,9 @@ def run_vqe_optimization():
     params= np.copy(initial_point)
 
     #SPSA Hyperparameters
-    alpha, gamma = 0.602, 0.101
+    alpha, gamma = 0.50, 0.101
     a, c = 1.5, 0.15
-    A=5
+    A=10
 
     max_iterations= 200
 
