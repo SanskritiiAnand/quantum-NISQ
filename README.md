@@ -14,3 +14,33 @@ quantum-NISQ/
 ├── qaoa/                     # (In Progress) Combinatorial Max-Cut optimization layer
 ├── .gitignore
 └── requirements.txt
+```
+## Setup & Installation
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/SanskritiiAnand/quantum-NISQ.git
+cd quantum-NISQ
+
+-- If git not pre-installed: Click 'Code' at top of the page, download ZIP folder, extract the files and open them in terminal/IDE --
+```
+
+### 2. Configure virtual environment
+```bash
+Windowws:
+python -m venv venv
+venv\Scripts\activate
+Mac/Linux:
+python -m venv venv
+source venv/bin/activate
+```
+
+### 3. Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Run master engine
+```bash
+python main.py
+```
