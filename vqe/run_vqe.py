@@ -61,7 +61,7 @@ def run_vqe_optimization():
 
     plt.figure(figsize=(10,6))
     plt.plot(cobyla_history, label='COBYLA', color='tab:blue', lw=2)
-    plt.plot(spsa_history, label='POWELL', color='tab:orange', lw=2)
+    plt.plot(powell_history, label='POWELL', color='tab:orange', lw=2)
     plt.axhline(y= exact_energy, color='tab:red', linestyle='--', label='Exact Energy Baseline')
     plt.title("VQE Convergence Comparison on Noisy LiH System", fontsize=14)
     plt.xlabel("Optimizer Iterations", fontsize=12)
