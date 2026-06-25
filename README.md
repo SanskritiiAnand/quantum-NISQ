@@ -40,7 +40,5 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Run master engine
-```bash
-python main.py
-```
+### 4. Run the VQE engine
+
