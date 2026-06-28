@@ -11,7 +11,7 @@ quantum-NISQ/
 │   ├── molecules.py          # Active-space Hamiltonian factory & exact baseline solver
 │   ├── noise_engine.py       # Hardware noise cloning layer (IBM Brisbane snapshot)
 │   └── run_vqe.py            # VQE orchestrator featuring multi-strategy SciPy loops
-├── qaoa/                     # (In Progress) Combinatorial Max-Cut optimization layer
+├── qaoa/                     # Combinatorial Max-Cut optimization layer
 ├── .gitignore
 └── requirements.txt
 ```
