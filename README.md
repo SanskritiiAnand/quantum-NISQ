@@ -12,6 +12,9 @@ quantum-NISQ/
 │   ├── noise_engine.py       # Hardware noise cloning layer (IBM Brisbane snapshot)
 │   └── run_vqe.py            # VQE orchestrator featuring multi-strategy SciPy loops
 ├── qaoa/                     # Combinatorial Max-Cut optimization layer
+│    ├── max_cut.py           # Ideal statevector baseline for Sherrington-Kirkpatrick model
+│    ├── noise_benchmarks.py  # Unoptimized shot-budget stress testing over FakeBrisbane
+│    └── optimised_noise.py   # Hardware-native SPSA loop for active algorithmic error remediation
 ├── .gitignore
 └── requirements.txt
 ```
